@@ -3,37 +3,37 @@
 //#include<bits/stdc++.h>
 #include<stdio.h>
 
-void input(void);				//入力された YYYY/MM/DD HH24:mm-HH24:mm…を取得
-void calc(int i);					//各労働時間数の計算
+void input(void);		//入力された YYYY/MM/DD HH24:mm-HH24:mm…を取得
+void calc(int i);			//各労働時間数の計算
 void weekTotal(void);			//週の労働が４０時間を超える場合の計算
-int getWeekday(int y, int m, int d);				//日付から曜日を判定する
-int convertTime(int t);				//分→時の変換（３０分未満切り捨て、３０分以上繰り上げ）
+int getWeekday(int y, int m, int d);			//日付から曜日を判定する
+int convertTime(int t);			//分→時の変換（３０分未満切り捨て、３０分以上繰り上げ）
 
-int year1,month1;						//集計対象年、月
+int year1,month1;				//集計対象年、月
 int year[40],month[40],date[40];		//入力された年、月、日、の配列
 int h1[40],h2[40],h3[40],h4[40];		//入力された時刻（HH）の配列
 int m1[40],m2[40],m3[40],m4[40];		//入力された時刻（mm）の配列
 
-int i,k=0;								//作業用カウンタ
-int total[40];							//1日の総労働時間数(分)
+int i,k=0;				//作業用カウンタ
+int total[40];			//1日の総労働時間数(分)
 int time1=0,time2=0,time3=0,time4=0,time5=0;
 //順に、法定内残業時間数、法定外残業時間数、深夜残業時間数、所定休日労働時間数、法定休日労働時間数(分)
-int sum_w = 0;						//週単位での総労働時間（分）
-int week;							//曜日の把握を行う作業変数
+int sum_w = 0;			//週単位での総労働時間（分）
+int week;			//曜日の把握を行う作業変数
 
 /*************************************************************************************************/
 
 int main(void) {
-	input();						//入力値の取得		
+	input();			//入力値の取得		
 	
 	for(i=0;i<=k;i++){
 		total[i] = ((h2[i]+h4[i])*60 + m2[i]+m4[i]) - ((h1[i]+h3[i])*60 + m1[i]+m3[i]); 	//各日の総労働時間の計算
 		week = getWeekday(year[i],month[i],date[i]);		//曜日の取得
 	
-		sum_w = sum_w + total[i];				//週単位での労働時間
+		sum_w = sum_w + total[i];			//週単位での労働時間
 		
-		calc(i);					//各労働時間数の計算
-		weekTotal();			//週の労働が４０時間を超える場合の、”法定外残業時間数”の計算
+		calc(i);				//各労働時間数の計算
+		weekTotal();		//週の労働が４０時間を超える場合の、”法定外残業時間数”の計算
 	}
 	//分→時の変換
 	time1 = convertTime(time1);
@@ -65,17 +65,15 @@ void calc(int i){
 			time1 = time1 + 60;	
 		}else if((h1[i] == 8) && (m1[i] == 0) && total[i] > 420 && total[i] < 480){  //８時間未満の場合
 			time1 = time1 + total[i] - 420;
-		}else if(h1[i] != 8 || m1[i] != 0){								//不就労働の場合
+		}else if(h1[i] != 8 || m1[i] != 0){				//不就労働の場合
 			time1 = time1 + 480 - (420 - ((h2[i]*60 + m2[i]) - (h1[i]*60 + m1[i]))) ;	
 		}
 			
-		//法定外残業時間
-		if(total[i] > 480){
+		if(total[i] > 480){		//法定外残業時間
 			time2 = time2 + total[i] - 480;
 		}
 			
-		//深夜残業時間数
-		if(h4[i] >= 22){
+		if(h4[i] >= 22){		//深夜残業時間数
 			time3 = time3 + h4[i]*60 + m4[i] - (22*60);
 		}
 			
@@ -83,51 +81,47 @@ void calc(int i){
 	//金曜日の場合	
 	}else if(week == 5){	
 		//法定内残業時間
-		if((h1[i] == 8) && (m1[i] == 0) && total[i]>=480){					//８時間を超える場合
+		if((h1[i] == 8) && (m1[i] == 0) && total[i]>=480){			//８時間を超える場合
 			time1 = time1 + 60;
 		}else if((h1[i] == 8) && (m1[i] == 0) && total[i] > 420 && total[i] < 480){  //８時間未満の場合
 			time1 = time1 + total[i] - 420;
-		}else if(h1[i] != 8 || m1[i] != 0){									//不就労働の場合
+		}else if(h1[i] != 8 || m1[i] != 0){				//不就労働の場合
 			time1 = time1 + 480 - (420 - ((h2[i]*60 + m2[i]) - (h1[i]*60 + m1[i]))) ;
 		}
 			
 		//法定外残業時間
-		if(total[i]>480 && h4[i]<24){					//日付を跨がない場合
+		if(total[i]>480 && h4[i]<24){		//日付を跨がない場合
 			time2 = time2 + total[i] - 480;
-		}else if(total[i]>480 && h4[i] >= 24){				//日付を跨ぐ場合
+		}else if(total[i]>480 && h4[i] >= 24){		//日付を跨ぐ場合
 			time2 = time2 +  total[i] - 480 - ((h4[i]*60 + m4[i]) - 24*60);
 				
-			//所定休日労働時間数
-			time4 = time4 + ((h4[i]*60 + m4[i]) - 24*60);
+			time4 = time4 + ((h4[i]*60 + m4[i]) - 24*60);		//所定休日労働時間数
 		}
 						
-		//深夜残業時間数
-		if(h4[i] >= 22){
+		if(h4[i] >= 22){		//深夜残業時間数
 			time3 = time3 + h4[i]*60 + m4[i] - (22*60);
 		}
 			
 /****************************************************************/	
 	//土曜日の場合	
-	}else if(week == 6){					//所定休日労働時間数
-		if(h4[i] < 24){						//日付を跨がない場合
+	}else if(week == 6){		//所定休日労働時間数
+		if(h4[i] < 24){			//日付を跨がない場合
 			time4 = time4 + total[i];
 		}else if(h4[i] >= 24){			//法定休日労働時間数（日付を跨ぐ場合）
 			time4 = time4 +  total[i] - ((h4[i]*60 + m4[i]) - 24*60);
 			time5 = time5 + ((h4[i]*60 + m4[i]) - 24*60);
 		}
 			
-		//深夜残業時間数
-		if(h4[i] >= 22){
+		if(h4[i] >= 22){		//深夜残業時間数
 			time3 = time3 + h4[i]*60 + m4[i] - (22*60);
 		}		
 			
 /****************************************************************/		
 	//日曜日の場合	
-	}else if(week == 0){				//法定休日労働時間数
+	}else if(week == 0){			//法定休日労働時間数
 		time5 = time5 + total[i];
 			
-		//深夜残業時間数
-		if(h4[i]>=22){
+		if(h4[i]>=22){		//深夜残業時間数
 			time3 = time3 + h4[i]*60 + m4[i] - (22*60);
 		}
 	}
@@ -141,7 +135,7 @@ void weekTotal(void){
 			time1 = time1 - 60;	
 		}else if((h1[i] == 8) && (m1[i] == 0) && total[i] > 420 && total[i] < 480){  //日の労働が８時間未満の場合
 			time1 = time1 - (total[i] - 420);
-		}else if(h1[i] != 8 || m1[i] != 0){								//不就労働の場合
+		}else if(h1[i] != 8 || m1[i] != 0){				//不就労働の場合
 			time1 = time1 - (480 - (420 - ((h2[i]*60 + m2[i]) - (h1[i]*60 + m1[i])))) ;	
 		}
 		//法定外残業時間
