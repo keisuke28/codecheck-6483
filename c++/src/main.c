@@ -3,10 +3,10 @@
 //#include<bits/stdc++.h>
 #include<stdio.h>
 
-void input(void);		//入力された YYYY/MM/DD HH24:mm-HH24:mm…を取得
+void input(void);	//入力された YYYY/MM/DD HH24:mm-HH24:mm…を取得
 void calc(int i);			//各労働時間数の計算
 void weekTotal(void);			//週の労働が４０時間を超える場合の計算
-int getWeekday(int y, int m, int d);			//日付から曜日を判定する
+int getWeekday(int y, int m, int d);	//日付から曜日を判定する
 int convertTime(int t);			//分→時の変換（３０分未満切り捨て、３０分以上繰り上げ）
 
 int year1,month1;				//集計対象年、月
@@ -24,7 +24,7 @@ int week;			//曜日の把握を行う作業変数
 /*************************************************************************************************/
 
 int main(void) {
-	input();			//入力値の取得		
+	input();	//入力値の取得		
 	
 	for(i=0;i<=k;i++){
 		total[i] = ((h2[i]+h4[i])*60 + m2[i]+m4[i]) - ((h1[i]+h3[i])*60 + m1[i]+m3[i]); 	//各日の総労働時間の計算
@@ -43,7 +43,7 @@ int main(void) {
 	time5 = convertTime(time5);
 	
 	//結果の出力
-	printf("\n");				//改行
+	printf("\n");			//改行
 	printf("%d\n",time1-1);		//法定内残業時間数
 	printf("%d\n",time2);		//法定外残業時間数
 	printf("%d\n",time3);		//深夜残業時間数
@@ -57,11 +57,11 @@ int main(void) {
 //以降、各関数について
 
 //各労働時間数の計算　曜日ごとに考える
-void calc(int i){
+void calc(i){
 	//月曜日〜木曜日の場合
 	if(week != 0 && week != 5 && week != 6){
 		//法定内残業時間
-		if((h1[i] == 8) && (m1[i] == 0) && total[i]>=480){			//８時間を超える場合
+		if((h1[i] == 8) && (m1[i] == 0) && total[i]>=480){	//８時間を超える場合
 			time1 = time1 + 60;	
 		}else if((h1[i] == 8) && (m1[i] == 0) && total[i] > 420 && total[i] < 480){  //８時間未満の場合
 			time1 = time1 + total[i] - 420;
@@ -81,7 +81,7 @@ void calc(int i){
 	//金曜日の場合	
 	}else if(week == 5){	
 		//法定内残業時間
-		if((h1[i] == 8) && (m1[i] == 0) && total[i]>=480){			//８時間を超える場合
+		if((h1[i] == 8) && (m1[i] == 0) && total[i]>=480){	//８時間を超える場合
 			time1 = time1 + 60;
 		}else if((h1[i] == 8) && (m1[i] == 0) && total[i] > 420 && total[i] < 480){  //８時間未満の場合
 			time1 = time1 + total[i] - 420;
@@ -118,7 +118,7 @@ void calc(int i){
 			
 /****************************************************************/		
 	//日曜日の場合	
-	}else if(week == 0){			//法定休日労働時間数
+	}else if(week == 0){		//法定休日労働時間数
 		time5 = time5 + total[i];
 			
 		if(h4[i]>=22){		//深夜残業時間数
@@ -131,7 +131,7 @@ void calc(int i){
 //週の労働が４０時間を超える場合の、”法定外残業時間数”の計算、修正
 void weekTotal(void){
 	if(sum_w > 40*60){			
-		if((h1[i] == 8) && (m1[i] == 0) && total[i]>=480){			//日の労働が８時間を超える場合
+		if((h1[i] == 8) && (m1[i] == 0) && total[i]>=480){		//日の労働が８時間を超える場合
 			time1 = time1 - 60;	
 		}else if((h1[i] == 8) && (m1[i] == 0) && total[i] > 420 && total[i] < 480){  //日の労働が８時間未満の場合
 			time1 = time1 - (total[i] - 420);
@@ -153,8 +153,8 @@ void weekTotal(void){
 //入力された YYYY/MM/DD HH24:mm-HH24:mm…を配列に取得
 void input(void){
 	
-	//scanf("%d/%d",&year1,&month1);
-	printf("YYYY/MM/DD HH24:mm-HH24:mm HH24:mm-HH24:mm\n");//後で消す
+	scanf("%d/%d",&year1,&month1);
+	//printf("YYYY/MM/DD HH24:mm-HH24:mm HH24:mm-HH24:mm\n");
 	while(1){
 		
 		 scanf("%d/%d/%d %d:%d-%d:%d %d:%d-%d:%d"
